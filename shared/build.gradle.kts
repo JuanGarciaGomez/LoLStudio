@@ -63,6 +63,8 @@ kotlin {
             implementation(libs.ktor.serializationKotlinxJson)
             api(libs.koin.core)
             implementation(libs.koin.composeViewmodel)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.networkKtor3)
         }
         jvmMain.dependencies {
             implementation(libs.ktor.clientOkhttp)
