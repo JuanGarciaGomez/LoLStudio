@@ -29,9 +29,9 @@ La key de desarrollo de Riot caduca cada 24 h. Alternativa: registrar una person
 ## Arquitectura propuesta
 
 - `commonMain`: modelos (`kotlinx.serialization`), Ktor Client, repositorios, motor de recomendaciones, ViewModels, UI Compose.
-- `jvmMain` (Desktop): `LiveClientDataSource` (polling a 127.0.0.1:2999 con cliente que acepta el cert local).
-- `androidMain` / `iosMain`: `SpectatorDataSource` (búsqueda por Riot ID).
-- Interfaz común `GameDataSource` con implementaciones por plataforma, inyectadas con Koin (módulo común + módulo por plataforma).
+- `jvmMain` (Desktop): cliente HTTP de Live Client (confía solo en el certificado raíz de Riot, `riotgames.pem`, y solo para 127.0.0.1). DTOs, mapper y `LiveClientGameRepository` viven en `commonMain`.
+- `androidMain` / `iosMain`: implementación de `LiveGameRepository` con `spectator-v5` (búsqueda por Riot ID).
+- Interfaz de dominio `LiveGameRepository` con implementación por plataforma, enlazada en `platformModule` (`expect`/`actual`) de Koin.
 - Caché en memoria al inicio. SQLDelight solo si hace falta.
 
 ### Módulos y paquetes
@@ -64,10 +64,11 @@ La key de desarrollo de Riot caduca cada 24 h. Alternativa: registrar una person
 ## Roadmap (marcar al completar)
 
 ### Fase 1 — Desktop MVP
-- [ ] Cliente Ktor para Live Client Data API (cert local aceptado solo en 127.0.0.1)
-- [ ] Modelos `@Serializable` para `allgamedata` (jugador activo, `allPlayers`, equipos, ítems, `gameData`)
-- [ ] Polling cada ~2-5 s; estados: sin partida / en partida / error
-- [ ] Pantalla: mi campeón, aliados, enemigos (con imágenes de Data Dragon)
+- [x] Cliente Ktor para Live Client Data API (cert local aceptado solo en 127.0.0.1)
+- [x] Modelos `@Serializable` para `allgamedata` (jugador activo, `allPlayers`, equipos, ítems, `gameData`)
+- [x] Polling cada ~2-5 s; estados: sin partida / en partida / error
+- [x] Pantalla: mi campeón, aliados, enemigos
+- [ ] Imágenes de campeones de Data Dragon en la pantalla
 
 ### Fase 2 — Recomendaciones
 - [ ] Carga y caché de datos de Data Dragon (campeones, ítems)
