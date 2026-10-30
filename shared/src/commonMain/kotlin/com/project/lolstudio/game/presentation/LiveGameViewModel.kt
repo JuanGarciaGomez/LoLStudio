@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.lolstudio.game.domain.model.LiveGameStatus
 import com.project.lolstudio.game.domain.usecase.ObserveLiveGame
+import com.project.lolstudio.recommendations.domain.usecase.RecommendBuild
 import com.project.lolstudio.staticdata.domain.usecase.GetChampionPortraitUrls
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 class LiveGameViewModel(
     observeLiveGame: ObserveLiveGame,
     private val getChampionPortraitUrls: GetChampionPortraitUrls,
+    private val recommendBuild: RecommendBuild,
 ) : ViewModel() {
 
     val state: StateFlow<LiveGameState> = observeLiveGame()
@@ -24,6 +26,7 @@ class LiveGameViewModel(
         is LiveGameStatus.InGame -> LiveGameState.InGame(
             game = game,
             championPortraitUrls = getChampionPortraitUrls(game.players.map { it.championId }),
+            recommendation = recommendBuild(game),
         )
         is LiveGameStatus.Unavailable -> LiveGameState.Error(reason)
     }

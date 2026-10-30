@@ -71,9 +71,9 @@ La key de desarrollo de Riot caduca cada 24 h. Alternativa: registrar una person
 - [x] Imágenes de campeones de Data Dragon en la pantalla (Coil 3)
 
 ### Fase 2 — Recomendaciones
-- [ ] Carga y caché de datos de Data Dragon (campeones, ítems)
-- [ ] Clasificar daño enemigo (AD/AP/mixto) y sugerir ítems por reglas
-- [ ] Pantalla de recomendaciones (build + notas)
+- [x] Carga y caché de datos de Data Dragon (campeones, ítems)
+- [x] Clasificar daño enemigo (AD/AP/mixto) y sugerir ítems por reglas
+- [x] Pantalla de recomendaciones (build + notas)
 
 ### Fase 3 — Tips con IA
 - [ ] Cliente de la API de Claude (key local)

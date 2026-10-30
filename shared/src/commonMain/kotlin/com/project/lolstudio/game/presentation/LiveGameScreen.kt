@@ -26,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.project.lolstudio.game.domain.model.LiveGame
 import com.project.lolstudio.game.domain.model.Player
+import com.project.lolstudio.recommendations.presentation.BuildRecommendationPanel
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Duration
 
@@ -45,15 +46,30 @@ fun LiveGameScreen(state: LiveGameState) {
             LiveGameState.Loading -> CircularProgressIndicator()
             LiveGameState.WaitingForGame -> Text("Esperando una partida en curso…")
             is LiveGameState.Error -> Text("No se pudo leer la partida: ${state.message}")
-            is LiveGameState.InGame -> GameOverview(state.game, state.championPortraitUrls)
+            is LiveGameState.InGame -> InGameContent(state)
         }
     }
 }
 
 @Composable
-private fun GameOverview(game: LiveGame, portraitUrls: Map<String, String>) {
+private fun InGameContent(state: LiveGameState.InGame) {
+    Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+        GameOverview(
+            game = state.game,
+            portraitUrls = state.championPortraitUrls,
+            modifier = Modifier.weight(1f),
+        )
+        BuildRecommendationPanel(
+            recommendation = state.recommendation,
+            modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
+        )
+    }
+}
+
+@Composable
+private fun GameOverview(game: LiveGame, portraitUrls: Map<String, String>, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text("${game.mode} · ${game.elapsed.asClock()}", style = MaterialTheme.typography.titleLarge)
