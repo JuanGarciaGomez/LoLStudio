@@ -29,10 +29,37 @@ La key de desarrollo de Riot caduca cada 24 h. Alternativa: registrar una person
 ## Arquitectura propuesta
 
 - `commonMain`: modelos (`kotlinx.serialization`), Ktor Client, repositorios, motor de recomendaciones, ViewModels, UI Compose.
-- `desktopMain`: `LiveClientDataSource` (polling a 127.0.0.1:2999 con cliente que acepta el cert local).
+- `jvmMain` (Desktop): `LiveClientDataSource` (polling a 127.0.0.1:2999 con cliente que acepta el cert local).
 - `androidMain` / `iosMain`: `SpectatorDataSource` (búsqueda por Riot ID).
-- Interfaz común `GameDataSource` con implementaciones por plataforma (`expect/actual` o inyección con Koin).
+- Interfaz común `GameDataSource` con implementaciones por plataforma, inyectadas con Koin (módulo común + módulo por plataforma).
 - Caché en memoria al inicio. SQLDelight solo si hace falta.
+
+### Módulos y paquetes
+
+- Se mantienen solo los módulos actuales: `shared`, `desktopApp`, `androidApp`, `iosApp`. No crear módulos Gradle nuevos sin una razón concreta (tiempos de build, reutilización real).
+- Dentro de `shared`, organizar **por feature**: `game/`, `recommendations/`, `tips/`, `staticdata/`, `core/` (red, DI, utilidades).
+- Cada feature separa capas en `presentation/`, `domain/` y `data/`:
+  - `domain`: modelos de dominio puros (sin `@Serializable` ni Ktor), interfaces de repositorio y casos de uso. No depende de `data` ni de `presentation`.
+  - `data`: DTOs `@Serializable`, data sources, implementaciones de repositorio y mappers DTO → dominio.
+  - `presentation`: ViewModels MVI y pantallas Compose. Depende solo de `domain`.
+- Los mappers DTO → dominio son obligatorios: Live Client y `spectator-v5` entregan formas distintas y deben converger en el mismo modelo de partida.
+
+### Patrón de presentación: MVI
+
+- Cada pantalla tiene un `XxxViewModel` que expone un único `StateFlow<XxxState>` y recibe acciones vía `fun onIntent(intent: XxxIntent)`.
+- `XxxState`: `data class` inmutable (o `sealed interface` cuando los estados son excluyentes: sin partida / en partida / error).
+- `XxxIntent`: `sealed interface` con las acciones del usuario.
+- Efectos de una sola vez (navegación, toasts) con `Channel`/`Flow` de `XxxEffect` **solo si la pantalla los necesita**.
+- Sin librería MVI (Orbit, MVIKotlin...): `ViewModel` + `StateFlow` + `update {}` bastan.
+- La UI Compose es una función de `state` + lambda `onIntent`; sin lógica.
+
+## Estilo de código
+
+- El código debe entenderse sin comentarios: nombres descriptivos, funciones cortas con una sola responsabilidad. Comentar solo el *porqué* de algo no obvio (p. ej. por qué se acepta el cert de 127.0.0.1).
+- SOLID con sentido práctico: interfaces solo donde haya más de una implementación real o se necesite un doble en tests (ej. `GameDataSource`). No crear `Interface` + `InterfaceImpl` por defecto.
+- Evitar boilerplate: preferir `data class`, `sealed interface`, funciones de extensión y valores por defecto sobre builders o jerarquías.
+- Casos de uso: una clase por acción con `operator fun invoke(...)`, nombrados con verbo (`ObserveLiveGame`, `RecommendBuild`). **Siempre** hay caso de uso entre ViewModel y repositorio: los ViewModels nunca dependen de repositorios directamente.
+- DI con **Koin** (`koin-core`, `koin-compose-viewmodel`): inyección por constructor, un módulo Koin por feature más uno por plataforma; los ViewModels se obtienen con `koinViewModel()`.
 
 ## Roadmap (marcar al completar)
 
