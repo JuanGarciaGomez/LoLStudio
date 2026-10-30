@@ -64,3 +64,22 @@ Thumbs.db
 # Misc
 # ==========================================
 node_modules/
+
+# ==========================================
+# Secrets & signing (API keys de Riot / Claude)
+# ==========================================
+secrets.properties
+*.env
+.env*
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+
+# ==========================================
+# Logs & Claude Code (config local)
+# ==========================================
+*.log
+.claude/settings.local.json
