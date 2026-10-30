@@ -89,8 +89,17 @@ La key de desarrollo de Riot caduca cada 24 h. Alternativa: registrar una person
 
 - Kotlin idiomático, corrutinas + `Flow`, sin lógica de negocio en la UI.
 - Todo lo posible en `commonMain`; código de plataforma solo para fuentes de datos.
-- Commits pequeños por tarea del roadmap.
+- Commits pequeños por tarea del roadmap, con Conventional Commits (`feat:`, `fix:`, `build:`, `docs:`, `refactor:`, `test:`).
 - Antes de agregar una dependencia, preguntar o justificarla.
+
+## Flujo de ramas (Gitflow)
+
+- `main`: solo versiones estables. Nunca se commitea directo.
+- `develop`: rama de integración. Nunca se commitea directo; todo entra por PR.
+- `feature/<descripcion-corta>`: sale de `develop`, PR hacia `develop`. Una por tarea o grupo de tareas del roadmap (ej. `feature/phase-2-damage-rules`).
+- `release/<version>`: sale de `develop` al cerrar una fase; solo ajustes finales. PR hacia `main` y merge de vuelta a `develop`. Etiquetar `main` con `v<version>`.
+- `hotfix/<descripcion-corta>`: sale de `main` para corregir algo urgente; PR hacia `main` y merge de vuelta a `develop`.
+- Antes de empezar trabajo nuevo: actualizar `develop` y crear la rama correspondiente.
 
 ## Primera tarea al abrir el repo
 
