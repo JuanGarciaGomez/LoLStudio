@@ -56,7 +56,7 @@ La key de desarrollo de Riot caduca cada 24 h. Alternativa: registrar una person
 ## Estilo de código
 
 - El código debe entenderse sin comentarios: nombres descriptivos, funciones cortas con una sola responsabilidad. Comentar solo el *porqué* de algo no obvio (p. ej. por qué se acepta el cert de 127.0.0.1).
-- SOLID con sentido práctico: interfaces solo donde haya más de una implementación real o se necesite un doble en tests (ej. `GameDataSource`). No crear `Interface` + `InterfaceImpl` por defecto.
+- SOLID con sentido práctico: interfaces solo donde haya más de una implementación real o se necesite un doble en tests (ej. `LiveGameRepository`). No crear `Interface` + `InterfaceImpl` por defecto.
 - Evitar boilerplate: preferir `data class`, `sealed interface`, funciones de extensión y valores por defecto sobre builders o jerarquías.
 - Casos de uso: una clase por acción con `operator fun invoke(...)`, nombrados con verbo (`ObserveLiveGame`, `RecommendBuild`). **Siempre** hay caso de uso entre ViewModel y repositorio: los ViewModels nunca dependen de repositorios directamente.
 - DI con **Koin** (`koin-core`, `koin-compose-viewmodel`): inyección por constructor, un módulo Koin por feature más uno por plataforma; los ViewModels se obtienen con `koinViewModel()`.
