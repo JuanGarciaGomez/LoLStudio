@@ -9,7 +9,9 @@ data class LiveGame(
     val allies: List<Player>,
     val enemies: List<Player>,
     val myGold: Int?,
-)
+) {
+    val players: List<Player> get() = listOf(me) + allies + enemies
+}
 
 data class Player(
     val riotId: String,

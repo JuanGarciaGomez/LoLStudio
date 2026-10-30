@@ -68,7 +68,7 @@ La key de desarrollo de Riot caduca cada 24 h. Alternativa: registrar una person
 - [x] Modelos `@Serializable` para `allgamedata` (jugador activo, `allPlayers`, equipos, ítems, `gameData`)
 - [x] Polling cada ~2-5 s; estados: sin partida / en partida / error
 - [x] Pantalla: mi campeón, aliados, enemigos
-- [ ] Imágenes de campeones de Data Dragon en la pantalla
+- [x] Imágenes de campeones de Data Dragon en la pantalla (Coil 3)
 
 ### Fase 2 — Recomendaciones
 - [ ] Carga y caché de datos de Data Dragon (campeones, ítems)
